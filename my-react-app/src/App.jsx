@@ -10,14 +10,13 @@ import Profile from "./components/pages/Profile";
 import LoadingScreen from "./components/LoadingScreen";
 
 export default function App() {
-  const [sidebarToggle, setSidebarToggle] = useState(true);
+  const [sidebarToggle, setSidebarToggle] = useState(true); // controls collapse
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [currentPage, setCurrentPage] = useState("dashboard");
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Editable profile state
   const [profile, setProfile] = useState({
     name: "John Doe",
     username: "admin_master",
@@ -25,7 +24,6 @@ export default function App() {
     email: "admin@example.com",
   });
 
-  // Update multiple profile fields at once
   const updateProfile = (updatedData) => {
     setProfile((prev) => ({
       ...prev,
@@ -33,7 +31,6 @@ export default function App() {
     }));
   };
 
-  // Update username specifically for sidebar
   const updateUsername = (newUsername) => {
     setProfile((prev) => ({
       ...prev,
@@ -84,7 +81,6 @@ export default function App() {
 
   if (loading) return <LoadingScreen />;
 
-  // NOT LOGGED IN
   if (!isLoggedIn) {
     return (
       <div className="min-h-screen flex justify-center items-center bg-gray-100">
@@ -130,15 +126,21 @@ export default function App() {
 
   return (
     <div className="flex h-screen bg-gray-100">
+      {/* Sidebar */}
       <Sidebar
-        status={sidebarToggle}
+        status={sidebarToggle} // pass status for collapse
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         onLogout={handleLogout}
         username={profile.username}
       />
 
-      <div className="flex flex-col flex-1">
+      {/* Main Content */}
+      <div
+        className={`flex flex-col flex-1 transition-all duration-300 ${
+          sidebarToggle ? "ml-0" : "ml-0"
+        }`}
+      >
         <Header onSidebarToggle={toggleSidebar} />
         <main className="p-6 flex-1 overflow-auto">{pageContent}</main>
       </div>

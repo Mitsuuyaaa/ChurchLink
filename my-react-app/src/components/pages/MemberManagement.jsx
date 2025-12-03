@@ -2,23 +2,43 @@ import React, { useState } from "react";
 
 export default function UserManagement() {
   const [members, setMembers] = useState([
-    { id: 1, username: "john_doe", role: "Admin" },
-    { id: 2, username: "jane_smith", role: "Member" },
-    { id: 3, username: "mike_jones", role: "Member" },
+    {
+      id: 1,
+      fullName: "John Doe",
+      age: 30,
+      gender: "Male",
+      address: "123 Main St",
+      ministry: "Choir",
+    },
+    {
+      id: 2,
+      fullName: "Jane Smith",
+      age: 25,
+      gender: "Female",
+      address: "456 Elm St",
+      ministry: "Youth",
+    },
   ]);
 
-  const [formData, setFormData] = useState({ id: null, username: "", role: "Member" });
+  const [formData, setFormData] = useState({
+    id: null,
+    fullName: "",
+    age: "",
+    gender: "Male",
+    address: "",
+    ministry: "",
+  });
   const [isEditing, setIsEditing] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
-  // Handle Delete
+  // Delete member
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this member?")) {
       setMembers(members.filter((m) => m.id !== id));
     }
   };
 
-  // Handle Add + Edit Submit
+  // Add/Edit submit
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -31,11 +51,18 @@ export default function UserManagement() {
     }
 
     setShowForm(false);
-    setFormData({ id: null, username: "", role: "Member" });
+    setFormData({
+      id: null,
+      fullName: "",
+      age: "",
+      gender: "Male",
+      address: "",
+      ministry: "",
+    });
     setIsEditing(false);
   };
 
-  // Handle Edit Button
+  // Edit button
   const handleEdit = (member) => {
     setFormData(member);
     setIsEditing(true);
@@ -52,7 +79,14 @@ export default function UserManagement() {
         onClick={() => {
           setShowForm(true);
           setIsEditing(false);
-          setFormData({ id: null, username: "", role: "Member" });
+          setFormData({
+            id: null,
+            fullName: "",
+            age: "",
+            gender: "Male",
+            address: "",
+            ministry: "",
+          });
         }}
         className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
       >
@@ -65,8 +99,11 @@ export default function UserManagement() {
           <thead>
             <tr className="border-b border-green-200">
               <th className="px-4 py-2 text-green-700">ID</th>
-              <th className="px-4 py-2 text-green-700">Username</th>
-              <th className="px-4 py-2 text-green-700">Role</th>
+              <th className="px-4 py-2 text-green-700">Full Name</th>
+              <th className="px-4 py-2 text-green-700">Age</th>
+              <th className="px-4 py-2 text-green-700">Gender</th>
+              <th className="px-4 py-2 text-green-700">Address</th>
+              <th className="px-4 py-2 text-green-700">Ministry</th>
               <th className="px-4 py-2 text-green-700">Actions</th>
             </tr>
           </thead>
@@ -77,8 +114,11 @@ export default function UserManagement() {
                 className="border-b border-green-100 hover:bg-green-50 transition-colors"
               >
                 <td className="px-4 py-2">{member.id}</td>
-                <td className="px-4 py-2">{member.username}</td>
-                <td className="px-4 py-2">{member.role}</td>
+                <td className="px-4 py-2">{member.fullName}</td>
+                <td className="px-4 py-2">{member.age}</td>
+                <td className="px-4 py-2">{member.gender}</td>
+                <td className="px-4 py-2">{member.address}</td>
+                <td className="px-4 py-2">{member.ministry}</td>
                 <td className="px-4 py-2 flex gap-2">
                   <button
                     onClick={() => handleEdit(member)}
@@ -90,14 +130,14 @@ export default function UserManagement() {
                     onClick={() => handleDelete(member.id)}
                     className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                   >
-                    Delete
+                    Remove
                   </button>
                 </td>
               </tr>
             ))}
             {members.length === 0 && (
               <tr>
-                <td colSpan="4" className="px-4 py-4 text-center text-gray-500">
+                <td colSpan="7" className="px-4 py-4 text-center text-gray-500">
                   No members found.
                 </td>
               </tr>
@@ -116,30 +156,69 @@ export default function UserManagement() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-gray-700">Username</label>
+                <label className="block text-gray-700">Full Name</label>
                 <input
                   type="text"
                   required
-                  value={formData.username}
+                  value={formData.fullName}
                   onChange={(e) =>
-                    setFormData({ ...formData, username: e.target.value })
+                    setFormData({ ...formData, fullName: e.target.value })
                   }
                   className="w-full border rounded px-3 py-2 mt-1"
                 />
               </div>
 
               <div>
-                <label className="block text-gray-700">Role</label>
-                <select
-                  value={formData.role}
+                <label className="block text-gray-700">Age</label>
+                <input
+                  type="number"
+                  required
+                  value={formData.age}
                   onChange={(e) =>
-                    setFormData({ ...formData, role: e.target.value })
+                    setFormData({ ...formData, age: e.target.value })
+                  }
+                  className="w-full border rounded px-3 py-2 mt-1"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-700">Gender</label>
+                <select
+                  value={formData.gender}
+                  onChange={(e) =>
+                    setFormData({ ...formData, gender: e.target.value })
                   }
                   className="w-full border rounded px-3 py-2 mt-1"
                 >
-                  <option>Member</option>
-                  <option>Admin</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Other</option>
                 </select>
+              </div>
+
+              <div>
+                <label className="block text-gray-700">Address</label>
+                <input
+                  type="text"
+                  required
+                  value={formData.address}
+                  onChange={(e) =>
+                    setFormData({ ...formData, address: e.target.value })
+                  }
+                  className="w-full border rounded px-3 py-2 mt-1"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-700">Ministry</label>
+                <input
+                  type="text"
+                  value={formData.ministry}
+                  onChange={(e) =>
+                    setFormData({ ...formData, ministry: e.target.value })
+                  }
+                  className="w-full border rounded px-3 py-2 mt-1"
+                />
               </div>
 
               <div className="flex justify-end gap-2 mt-4">

@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 function Sidebar({ status, currentPage, setCurrentPage, onLogout, username }) {
-  if (!status) return null;
+  // status = isOpen
 
   const menuItems = [
     { icon: "🏡", text: "Home", page: "home" },
@@ -10,9 +10,17 @@ function Sidebar({ status, currentPage, setCurrentPage, onLogout, username }) {
   ];
 
   return (
-    <aside className="bg-gradient-to-b from-green-900 via-emerald-800 to-green-800 text-white min-h-screen p-6 flex flex-col shadow-2xl w-64">
+    <aside
+      className={`${
+        status ? "w-64" : "w-0"
+      } overflow-hidden bg-gradient-to-b from-green-900 via-emerald-800 to-green-800 text-white min-h-screen p-6 flex flex-col shadow-2xl transition-all duration-300`}
+    >
       {/* Logo / Brand */}
-      <div className="mb-10 cursor-pointer select-none">
+      <div
+        className={`mb-10 cursor-pointer select-none ${
+          status ? "opacity-100" : "opacity-0"
+        } transition-opacity duration-300`}
+      >
         <h2 className="text-3xl font-extrabold bg-gradient-to-r from-green-300 via-emerald-300 to-green-400 bg-clip-text text-transparent">
           ChurchLink
         </h2>
@@ -20,7 +28,7 @@ function Sidebar({ status, currentPage, setCurrentPage, onLogout, username }) {
       </div>
 
       {/* Menu Navigation */}
-      <nav className="flex-1">
+      <nav className={`${status ? "opacity-100" : "opacity-0"} transition-opacity duration-300 flex-1`}>
         <ul className="space-y-3">
           {menuItems.map((item, idx) => (
             <li key={idx}>
@@ -47,20 +55,21 @@ function Sidebar({ status, currentPage, setCurrentPage, onLogout, username }) {
       </nav>
 
       {/* Profile + Logout */}
-      <div className="mt-auto pt-6 border-t border-green-700/50 flex flex-col gap-3">
-        {/* Admin Profile - now clickable */}
+      <div
+        className={`mt-auto pt-6 border-t border-green-700/50 flex flex-col gap-3 ${
+          status ? "opacity-100" : "opacity-0"
+        } transition-opacity duration-300`}
+      >
+        {/* Admin Profile */}
         <button
-          onClick={() => setCurrentPage("profile")} // ✅ Opens profile page
+          onClick={() => setCurrentPage("profile")}
           className="flex items-center gap-3 p-3 rounded-lg bg-green-800/40 shadow-inner select-none w-full hover:bg-green-700/50 transition-all"
         >
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white font-bold">
-            {/* Use the first letter of the username for avatar */}
             {username ? username[0].toUpperCase() : "A"}
           </div>
           <div className="text-left">
-            <p className="text-sm font-semibold text-green-200">
-              {username || "Admin"} {/* Display the username dynamically */}
-            </p>
+            <p className="text-sm font-semibold text-green-200">{username || "Admin"}</p>
             <p className="text-xs text-green-400">Profile</p>
           </div>
         </button>
