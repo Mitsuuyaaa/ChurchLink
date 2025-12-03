@@ -50,7 +50,7 @@ function Register({ onRegister, onSwitchToLogin }) {
               </label>
               <input
                 type="text"
-                placeholder="Choose a username"
+                placeholder="Create a username"
                 className="w-full p-3 border border-green-200 rounded-xl outline-none bg-green-50/50"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}

@@ -5,8 +5,9 @@ import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import Dashboard from "./components/pages/Dashboard";
 import Home from "./components/pages/Home";
-import UserManagement from "./components/pages/UserManagement";
-import LoadingScreen from "./LoadingScreen";
+import UserManagement from "./components/pages/MemberManagement";
+import Profile from "./components/pages/Profile";
+import LoadingScreen from "./components/LoadingScreen";
 
 export default function App() {
   const [sidebarToggle, setSidebarToggle] = useState(true);
@@ -14,12 +15,33 @@ export default function App() {
   const [showRegister, setShowRegister] = useState(false);
   const [currentPage, setCurrentPage] = useState("dashboard");
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const [loading, setLoading] = useState(false); // NEW
+  // Editable profile state
+  const [profile, setProfile] = useState({
+    name: "John Doe",
+    username: "admin_master",
+    role: "Administrator",
+    email: "admin@example.com",
+  });
 
-  function toggleSidebar() {
-    setSidebarToggle(!sidebarToggle);
-  }
+  // Update multiple profile fields at once
+  const updateProfile = (updatedData) => {
+    setProfile((prev) => ({
+      ...prev,
+      ...updatedData,
+    }));
+  };
+
+  // Update username specifically for sidebar
+  const updateUsername = (newUsername) => {
+    setProfile((prev) => ({
+      ...prev,
+      username: newUsername,
+    }));
+  };
+
+  const toggleSidebar = () => setSidebarToggle(!sidebarToggle);
 
   // LOGIN
   function handleLogin(username, password) {
@@ -32,7 +54,6 @@ export default function App() {
       return;
     }
 
-    // Show loading screen for 1.5 seconds
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
@@ -61,12 +82,9 @@ export default function App() {
     setCurrentPage("dashboard");
   }
 
-  // If loading → show loading screen
-  if (loading) {
-    return <LoadingScreen />;
-  }
+  if (loading) return <LoadingScreen />;
 
-  // If NOT logged in → show login or register
+  // NOT LOGGED IN
   if (!isLoggedIn) {
     return (
       <div className="min-h-screen flex justify-center items-center bg-gray-100">
@@ -85,7 +103,7 @@ export default function App() {
     );
   }
 
-  // Logged in → load dashboard
+  // PAGE SWITCHING
   let pageContent;
   switch (currentPage) {
     case "dashboard":
@@ -96,6 +114,15 @@ export default function App() {
       break;
     case "users":
       pageContent = <UserManagement />;
+      break;
+    case "profile":
+      pageContent = (
+        <Profile
+          profile={profile}
+          updateProfile={updateProfile}
+          updateUsername={updateUsername}
+        />
+      );
       break;
     default:
       pageContent = <Dashboard />;
@@ -108,6 +135,7 @@ export default function App() {
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         onLogout={handleLogout}
+        username={profile.username}
       />
 
       <div className="flex flex-col flex-1">

@@ -1,25 +1,25 @@
 import { useState } from "react";
 
-function Sidebar({ status, currentPage, setCurrentPage, onLogout }) {
+function Sidebar({ status, currentPage, setCurrentPage, onLogout, username }) {
   if (!status) return null;
 
   const menuItems = [
-    { icon: "🏠", text: "Dashboard", page: "dashboard" },
-    { icon: "👥", text: "Users", page: "users" },
     { icon: "🏡", text: "Home", page: "home" },
+    { icon: "👥", text: "Members", page: "users" },
+    { icon: "📊", text: "Dashboard", page: "dashboard" },
   ];
 
   return (
     <aside className="bg-gradient-to-b from-green-900 via-emerald-800 to-green-800 text-white min-h-screen p-6 flex flex-col shadow-2xl w-64">
-      {/* Logo/Brand Section */}
-      <div className="mb-10">
-        <h2 className="text-3xl font-extrabold bg-gradient-to-r from-green-300 via-emerald-300 to-green-400 bg-clip-text text-transparent select-none">
+      {/* Logo / Brand */}
+      <div className="mb-10 cursor-pointer select-none">
+        <h2 className="text-3xl font-extrabold bg-gradient-to-r from-green-300 via-emerald-300 to-green-400 bg-clip-text text-transparent">
           ChurchLink
         </h2>
         <div className="h-1 w-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full mt-3 shadow-lg"></div>
       </div>
 
-      {/* Navigation */}
+      {/* Menu Navigation */}
       <nav className="flex-1">
         <ul className="space-y-3">
           {menuItems.map((item, idx) => (
@@ -46,18 +46,24 @@ function Sidebar({ status, currentPage, setCurrentPage, onLogout }) {
         </ul>
       </nav>
 
-      {/* Footer */}
+      {/* Profile + Logout */}
       <div className="mt-auto pt-6 border-t border-green-700/50 flex flex-col gap-3">
-        {/* User info */}
-        <div className="flex items-center gap-3 p-3 rounded-lg bg-green-800/40 shadow-inner select-none w-full">
+        {/* Admin Profile - now clickable */}
+        <button
+          onClick={() => setCurrentPage("profile")} // ✅ Opens profile page
+          className="flex items-center gap-3 p-3 rounded-lg bg-green-800/40 shadow-inner select-none w-full hover:bg-green-700/50 transition-all"
+        >
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white font-bold">
-            U
+            {/* Use the first letter of the username for avatar */}
+            {username ? username[0].toUpperCase() : "A"}
           </div>
-          <div>
-            <p className="text-sm font-semibold text-green-200">Mitsu</p>
-            <p className="text-xs text-green-400">Admin</p>
+          <div className="text-left">
+            <p className="text-sm font-semibold text-green-200">
+              {username || "Admin"} {/* Display the username dynamically */}
+            </p>
+            <p className="text-xs text-green-400">Profile</p>
           </div>
-        </div>
+        </button>
 
         {/* Logout button */}
         <button

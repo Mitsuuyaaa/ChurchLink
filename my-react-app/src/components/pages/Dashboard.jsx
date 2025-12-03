@@ -8,7 +8,7 @@ export default function Dashboard() {
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-4 rounded-xl shadow hover:shadow-lg transition-shadow">
-          <h3 className="text-lg font-semibold text-green-700">Total Users</h3>
+          <h3 className="text-lg font-semibold text-green-700">Total Members</h3>
           <p className="text-2xl font-bold">120</p>
         </div>
 
