@@ -1,10 +1,21 @@
 import React, { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 
-export default function Profile({ profile, updateProfile, updateUsername }) {
+export default function Profile() {
+  const { username, token, login } = useAuth();
+
+  // Simulate stored profile
+  const [profile, setProfile] = useState({
+    name: username || "Admin",
+    username: username || "",
+    role: "Administrator",
+    email: "admin@example.com",
+  });
+
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(profile);
 
-  // Sync form with latest profile data
+  // Sync form when profile changes
   useEffect(() => {
     setFormData(profile);
   }, [profile]);
@@ -20,11 +31,11 @@ export default function Profile({ profile, updateProfile, updateUsername }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Update all profile fields at once
-    updateProfile(formData);
+    // Update local profile data
+    setProfile(formData);
 
-    // Update the username in sidebar
-    updateUsername(formData.username);
+    // Update AuthContext username
+    login(token, formData.username);
 
     setIsEditing(false);
   };
@@ -32,21 +43,17 @@ export default function Profile({ profile, updateProfile, updateUsername }) {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-2xl mx-auto">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-green-900">Profile</h2>
-          <p className="text-gray-600 mt-1">Manage your account information</p>
-        </div>
+        <h2 className="text-3xl font-bold text-green-900">Profile</h2>
+        <p className="text-gray-600 mt-1">Manage your account details</p>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mt-8">
 
           {/* Avatar */}
           <div className="px-6 py-8 border-b border-gray-200">
             <div className="flex items-center gap-4">
               <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center">
                 <span className="text-3xl font-bold text-green-700">
-                  {formData.name && formData.name.length > 0
-                    ? formData.name[0].toUpperCase()
-                    : "?"}
+                  {formData.name?.[0]?.toUpperCase() || "?"}
                 </span>
               </div>
               <div>
@@ -62,55 +69,59 @@ export default function Profile({ profile, updateProfile, updateUsername }) {
           <div className="p-6">
             <form onSubmit={handleSubmit} className="space-y-4">
 
+              {/* NAME */}
               <div className="flex flex-col">
                 <label className="text-sm font-medium text-gray-500">Name</label>
                 <input
                   type="text"
                   name="name"
+                  disabled={!isEditing}
                   value={formData.name}
                   onChange={handleChange}
-                  disabled={!isEditing}
                   className="mt-1 px-3 py-2 border rounded-md"
                 />
               </div>
 
+              {/* USERNAME */}
               <div className="flex flex-col">
                 <label className="text-sm font-medium text-gray-500">Username</label>
                 <input
                   type="text"
                   name="username"
+                  disabled={!isEditing}
                   value={formData.username}
                   onChange={handleChange}
-                  disabled={!isEditing}
                   className="mt-1 px-3 py-2 border rounded-md"
                 />
               </div>
 
-              <div className="flex flex-col">
-                <label className="text-sm font-medium text-gray-500">Role</label>
-                <input
-                  type="text"
-                  name="role"
-                  value={formData.role}
-                  onChange={handleChange}
-                  disabled={!isEditing}
-                  className="mt-1 px-3 py-2 border rounded-md"
-                />
-              </div>
-
+              {/* EMAIL */}
               <div className="flex flex-col">
                 <label className="text-sm font-medium text-gray-500">Email</label>
                 <input
                   type="email"
                   name="email"
+                  disabled={!isEditing}
                   value={formData.email}
                   onChange={handleChange}
-                  disabled={!isEditing}
                   className="mt-1 px-3 py-2 border rounded-md"
                 />
               </div>
 
-              {/* Buttons */}
+              {/* ROLE */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-500">Role</label>
+                <input
+                  type="text"
+                  name="role"
+                  disabled={!isEditing}
+                  value={formData.role}
+                  onChange={handleChange}
+                  className="mt-1 px-3 py-2 border rounded-md"
+                />
+              </div>
+
+              {/* BUTTONS */}
               <div className="flex justify-between mt-4">
                 {isEditing ? (
                   <button
