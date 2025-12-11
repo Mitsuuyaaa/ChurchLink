@@ -1,16 +1,18 @@
-import { useState } from "react";
+import React from "react";
 
-function Sidebar({ status, currentPage, setCurrentPage, onLogout }) {
+function Sidebar({ status, currentPage, setCurrentPage, onLogout, user }) {
   if (!status) return null;
 
   const menuItems = [
-    { icon: "🏠", text: "Dashboard", page: "dashboard" },
-    { icon: "👥", text: "Users", page: "users" },
-    { icon: "🏡", text: "Home", page: "home" },
+    { icon: "📊", text: "Dashboard", page: "dashboard" },
+    { icon: "🎉", text: "Activities", page: "activities" },
+    { icon: "⛪", text: "Ministries", page: "ministries" },
+    { icon: "👥", text: "Members", page: "members" },
+    { icon: "📝", text: "Attendance", page: "attendance" },
   ];
 
   return (
-    <aside className="bg-gradient-to-b from-green-900 via-emerald-800 to-green-800 text-white min-h-screen p-6 flex flex-col shadow-2xl w-64">
+    <aside className="bg-gradient-to-b from-green-900 via-emerald-800 to-green-800 text-white min-h-screen flex flex-col shadow-2xl w-64">
       {/* Logo/Brand Section */}
       <div className="mb-10">
         <h2 className="text-3xl font-extrabold bg-gradient-to-r from-green-300 via-emerald-300 to-green-400 bg-clip-text text-transparent select-none">
@@ -31,6 +33,7 @@ function Sidebar({ status, currentPage, setCurrentPage, onLogout }) {
                     ? "bg-gradient-to-r from-green-500 to-emerald-600 shadow-lg scale-105"
                     : "hover:bg-green-700/70 hover:translate-x-1"
                 }`}
+                aria-label={`Go to ${item.text}`}
               >
                 <span className="text-2xl">{item.icon}</span>
                 <span
@@ -51,11 +54,11 @@ function Sidebar({ status, currentPage, setCurrentPage, onLogout }) {
         {/* User info */}
         <div className="flex items-center gap-3 p-3 rounded-lg bg-green-800/40 shadow-inner select-none w-full">
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white font-bold">
-            U
+            {user?.initials || "U"}
           </div>
           <div>
-            <p className="text-sm font-semibold text-green-200">Mitsu</p>
-            <p className="text-xs text-green-400">Admin</p>
+            <p className="text-sm font-semibold text-green-200">{user?.name || "Mitsu"}</p>
+            <p className="text-xs text-green-400">{user?.role || "Admin"}</p>
           </div>
         </div>
 
@@ -63,6 +66,7 @@ function Sidebar({ status, currentPage, setCurrentPage, onLogout }) {
         <button
           onClick={onLogout}
           className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-xl font-semibold"
+          aria-label="Logout"
         >
           Logout
         </button>
