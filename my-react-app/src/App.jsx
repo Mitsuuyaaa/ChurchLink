@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
+
 import Sidebar from "./components/Sidebar";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 // Pages
+import LoadingScreen from "./pages/LoadingScreen";
 import Dashboard from "./pages/Dashboard";
 import Members from "./pages/Members";
 import Attendance from "./pages/Attendance";
@@ -18,28 +20,102 @@ function AppInner() {
   const { token, logout } = useAuth();
   const [currentPage, setCurrentPage] = useState("dashboard");
 
+  // If user is logged in and tries to access login/register, redirect to dashboard
+  const AuthRedirect = ({ children }) => {
+    if (token) {
+      return <Navigate to="/" replace />;
+    }
+    return children;
+  };
+
   return (
     <div className="flex min-h-screen">
-      <Sidebar
-        status={!!token}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        onLogout={logout}
-      />
-      <main className="flex-1 bg-gray-100 p-6">
+      {/* Only show sidebar when logged in */}
+      {token && (
+        <Sidebar
+          status={!!token}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          onLogout={logout}
+        />
+      )}
+
+      <main className={`flex-1 ${token ? 'bg-gray-100 p-6' : ''}`}>
         <Routes>
-          {/* Public routes */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          {/* Public Routes - redirect to dashboard if already logged in */}
+          <Route
+            path="/login"
+            element={
+              <AuthRedirect>
+                <Login />
+              </AuthRedirect>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <AuthRedirect>
+                <Register />
+              </AuthRedirect>
+            }
+          />
 
-          {/* Protected routes */}
-          <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/members" element={<ProtectedRoute><Members /></ProtectedRoute>} />
-          <Route path="/attendance" element={<ProtectedRoute><Attendance /></ProtectedRoute>} />
-          <Route path="/activities" element={<ProtectedRoute><Activities /></ProtectedRoute>} />
-          <Route path="/ministries" element={<ProtectedRoute><Ministry /></ProtectedRoute>} />
+          {/* Protected Routes */}
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
 
-          {/* Catch-all */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/members"
+            element={
+              <ProtectedRoute>
+                <Members />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/attendance"
+            element={
+              <ProtectedRoute>
+                <Attendance />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/activities"
+            element={
+              <ProtectedRoute>
+                <Activities />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/ministries"
+            element={
+              <ProtectedRoute>
+                <Ministry />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* 404 */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
