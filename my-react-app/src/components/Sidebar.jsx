@@ -11,6 +11,7 @@ const menuItems = [
   { icon: "📋", text: "Attendance", page: "attendance", path: "/attendance" },
   { icon: "📂", text: "Ministries", page: "ministries", path: "/ministries" },
   { icon: "🎯", text: "Activities", page: "activities", path: "/activities" },
+  
 ];
 
 
